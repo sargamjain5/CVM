@@ -10,12 +10,18 @@ enum class TokenType {
     PRINT,
     IF,
     WHILE,
+    ELSE,
 
     ASSIGN,
+
     EQUAL_EQUAL,
+    NOT_EQUAL,
 
     GREATER,
     LESS,
+
+    GREATER_EQUAL,
+    LESS_EQUAL,
 
     PLUS,
     MINUS,

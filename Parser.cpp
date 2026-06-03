@@ -22,7 +22,8 @@ void Parser::expect(TokenType type) {
 
 std::unique_ptr<ASTNode> Parser::parse() {
 
-    auto program = std::make_unique<ProgramNode>();
+    auto program =
+        std::make_unique<ProgramNode>();
 
     while(peek().type != TokenType::END) {
 
@@ -30,15 +31,10 @@ std::unique_ptr<ASTNode> Parser::parse() {
             statement()
         );
 
-        if(peek().type == TokenType::SEMICOLON) {
-            advance();
-        }
-        else if(peek().type != TokenType::END &&
-                peek().type != TokenType::RBRACE)
+        if(peek().type ==
+           TokenType::SEMICOLON)
         {
-            throw std::runtime_error(
-                "Expected ';'"
-            );
+            advance();
         }
     }
 
@@ -47,11 +43,12 @@ std::unique_ptr<ASTNode> Parser::parse() {
 
 std::unique_ptr<ASTNode> Parser::ifStatement() {
 
-    advance(); // consume IF
+    advance(); // IF
 
     expect(TokenType::LPAREN);
 
-    auto condition = comparison();
+    auto condition =
+        comparison();
 
     expect(TokenType::RPAREN);
 
@@ -62,18 +59,46 @@ std::unique_ptr<ASTNode> Parser::ifStatement() {
             std::move(condition)
         );
 
-    while(peek().type != TokenType::RBRACE) {
-
-        ifNode->body.push_back(
+    while(peek().type !=
+          TokenType::RBRACE)
+    {
+        ifNode->thenBody.push_back(
             statement()
         );
 
-        if(peek().type == TokenType::SEMICOLON) {
+        if(peek().type ==
+           TokenType::SEMICOLON)
+        {
             advance();
         }
     }
 
     expect(TokenType::RBRACE);
+
+    // ELSE PART
+    if(peek().type ==
+       TokenType::ELSE)
+    {
+        advance();
+
+        expect(TokenType::LBRACE);
+
+        while(peek().type !=
+              TokenType::RBRACE)
+        {
+            ifNode->elseBody.push_back(
+                statement()
+            );
+
+            if(peek().type ==
+               TokenType::SEMICOLON)
+            {
+                advance();
+            }
+        }
+
+        expect(TokenType::RBRACE);
+    }
 
     return ifNode;
 }
@@ -163,9 +188,14 @@ std::unique_ptr<ASTNode> Parser::comparison() {
 
     auto left = expression();
 
-    while(peek().type == TokenType::GREATER ||
-          peek().type == TokenType::LESS ||
-          peek().type == TokenType::EQUAL_EQUAL)
+    while(
+        peek().type == TokenType::GREATER ||
+        peek().type == TokenType::LESS ||
+        peek().type == TokenType::GREATER_EQUAL ||
+        peek().type == TokenType::LESS_EQUAL ||
+        peek().type == TokenType::EQUAL_EQUAL ||
+        peek().type == TokenType::NOT_EQUAL
+    )
     {
         Token op = advance();
 
@@ -175,8 +205,19 @@ std::unique_ptr<ASTNode> Parser::comparison() {
 
         if(op.type == TokenType::GREATER)
             operation = '>';
+
         else if(op.type == TokenType::LESS)
             operation = '<';
+
+        else if(op.type == TokenType::GREATER_EQUAL)
+            operation = 'G';
+
+        else if(op.type == TokenType::LESS_EQUAL)
+            operation = 'L';
+
+        else if(op.type == TokenType::NOT_EQUAL)
+            operation = '!';
+
         else
             operation = '=';
 

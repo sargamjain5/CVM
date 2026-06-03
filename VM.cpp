@@ -106,7 +106,7 @@ int VM::execute(
                 int a = stack.back();
                 stack.pop_back();
 
-                stack.push_back(a>b);
+                stack.push_back(a > b);
 
                 break;
             }
@@ -119,7 +119,33 @@ int VM::execute(
                 int a = stack.back();
                 stack.pop_back();
 
-                stack.push_back(a<b);
+                stack.push_back(a < b);
+
+                break;
+            }
+
+            case OpCode::GTE: {
+
+                int b = stack.back();
+                stack.pop_back();
+
+                int a = stack.back();
+                stack.pop_back();
+
+                stack.push_back(a >= b);
+
+                break;
+            }
+
+            case OpCode::LTE: {
+
+                int b = stack.back();
+                stack.pop_back();
+
+                int a = stack.back();
+                stack.pop_back();
+
+                stack.push_back(a <= b);
 
                 break;
             }
@@ -132,7 +158,20 @@ int VM::execute(
                 int a = stack.back();
                 stack.pop_back();
 
-                stack.push_back(a==b);
+                stack.push_back(a == b);
+
+                break;
+            }
+
+            case OpCode::NEQ: {
+
+                int b = stack.back();
+                stack.pop_back();
+
+                int a = stack.back();
+                stack.pop_back();
+
+                stack.push_back(a != b);
 
                 break;
             }

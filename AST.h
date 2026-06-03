@@ -72,13 +72,16 @@ public:
 
     std::unique_ptr<ASTNode> condition;
 
-    std::vector<std::unique_ptr<ASTNode>> body;
+    std::vector<std::unique_ptr<ASTNode>> thenBody;
+
+    std::vector<std::unique_ptr<ASTNode>> elseBody;
 
     IfNode(
         std::unique_ptr<ASTNode> cond
     )
         : condition(std::move(cond)) {}
 };
+
 class WhileNode : public ASTNode {
 public:
 

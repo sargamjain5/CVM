@@ -16,7 +16,11 @@ enum class OpCode {
 
     GT,
     LT,
+    GTE,
+    LTE,
+
     EQ,
+    NEQ,
 
     JMP,
     JMP_IF_FALSE,

@@ -42,6 +42,12 @@ std::vector<Token> Lexer::tokenize() {
                     Token(TokenType::IF)
                 );
             }
+            else if(identifier == "else") {
+
+                tokens.push_back(
+                    Token(TokenType::ELSE)
+                );
+            }
             else if(identifier == "while") {
 
                 tokens.push_back(
@@ -80,6 +86,45 @@ std::vector<Token> Lexer::tokenize() {
                 )
             );
 
+            continue;
+        }
+
+        // >=
+        if(current == '>' &&
+           pos + 1 < source.size() &&
+           source[pos + 1] == '=')
+        {
+            tokens.push_back(
+                Token(TokenType::GREATER_EQUAL)
+            );
+
+            pos += 2;
+            continue;
+        }
+
+        // <=
+        if(current == '<' &&
+           pos + 1 < source.size() &&
+           source[pos + 1] == '=')
+        {
+            tokens.push_back(
+                Token(TokenType::LESS_EQUAL)
+            );
+
+            pos += 2;
+            continue;
+        }
+
+        // !=
+        if(current == '!' &&
+           pos + 1 < source.size() &&
+           source[pos + 1] == '=')
+        {
+            tokens.push_back(
+                Token(TokenType::NOT_EQUAL)
+            );
+
+            pos += 2;
             continue;
         }
 

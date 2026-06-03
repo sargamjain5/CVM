@@ -69,7 +69,7 @@ void Compiler::generate(ASTNode* node) {
         return;
     }
 
-    // IF SUPPORT
+    // IF / ELSE
     if(auto ifNode =
         dynamic_cast<IfNode*>(node))
     {
@@ -77,7 +77,7 @@ void Compiler::generate(ASTNode* node) {
             ifNode->condition.get()
         );
 
-        int jumpIndex =
+        int falseJump =
             instructions.size();
 
         instructions.push_back(
@@ -87,17 +87,40 @@ void Compiler::generate(ASTNode* node) {
             )
         );
 
-        for(auto& stmt : ifNode->body) {
+        for(auto& stmt :
+            ifNode->thenBody)
+        {
             generate(stmt.get());
         }
 
-        instructions[jumpIndex].operand =
+        int endJump =
+            instructions.size();
+
+        instructions.push_back(
+            Instruction(
+                OpCode::JMP,
+                0
+            )
+        );
+
+        instructions[falseJump]
+            .operand =
+            instructions.size();
+
+        for(auto& stmt :
+            ifNode->elseBody)
+        {
+            generate(stmt.get());
+        }
+
+        instructions[endJump]
+            .operand =
             instructions.size();
 
         return;
     }
 
-    // WHILE SUPPORT
+    // WHILE
     if(auto whileNode =
         dynamic_cast<WhileNode*>(node))
     {
@@ -131,12 +154,14 @@ void Compiler::generate(ASTNode* node) {
             )
         );
 
-        instructions[jumpFalse].operand =
+        instructions[jumpFalse]
+            .operand =
             instructions.size();
 
         return;
     }
 
+    // Binary Operations
     if(auto bin =
         dynamic_cast<BinaryOpNode*>(node))
     {
@@ -181,9 +206,27 @@ void Compiler::generate(ASTNode* node) {
                 );
                 break;
 
+            case 'G':
+                instructions.push_back(
+                    Instruction(OpCode::GTE)
+                );
+                break;
+
+            case 'L':
+                instructions.push_back(
+                    Instruction(OpCode::LTE)
+                );
+                break;
+
             case '=':
                 instructions.push_back(
                     Instruction(OpCode::EQ)
+                );
+                break;
+
+            case '!':
+                instructions.push_back(
+                    Instruction(OpCode::NEQ)
                 );
                 break;
         }

@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 #include "Lexer.h"
 #include "Parser.h"
@@ -7,29 +9,50 @@
 
 using namespace std;
 
-int main() {
+int main(int argc, char* argv[]) {
 
+    if(argc != 2) {
 
-    string code =
-        "x=0;"
-        "while(x<5){"
-        "print(x);"
-        "x=x+1;"
-        "}";
+        cout
+            << "Usage: ./cvm <file.cvm>"
+            << endl;
+
+        return 1;
+    }
+
+    ifstream file(argv[1]);
+
+    if(!file) {
+
+        cout
+            << "Cannot open file: "
+            << argv[1]
+            << endl;
+
+        return 1;
+    }
+
+    stringstream buffer;
+    buffer << file.rdbuf();
+
+    string code = buffer.str();
 
     try {
 
         Lexer lexer(code);
 
-        auto tokens = lexer.tokenize();
+        auto tokens =
+            lexer.tokenize();
 
         Parser parser(tokens);
 
-        auto ast = parser.parse();
+        auto ast =
+            parser.parse();
 
         Compiler compiler;
 
-        auto bytecode = compiler.compile(ast.get());
+        auto bytecode =
+            compiler.compile(ast.get());
 
         VM vm;
 
@@ -37,9 +60,12 @@ int main() {
     }
     catch(const exception& e) {
 
-        cout << "Error: "
-             << e.what()
-             << endl;
+        cerr
+            << "Runtime Error: "
+            << e.what()
+            << endl;
+
+        return 1;
     }
 
     return 0;
