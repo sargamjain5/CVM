@@ -3,7 +3,7 @@
 #include <vector>
 #include <unordered_map>
 
-#include "Bytecode.h"
+#include "../compiler/Bytecode.h"
 
 class VM {
 

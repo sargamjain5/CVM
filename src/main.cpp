@@ -2,12 +2,12 @@
 #include <fstream>
 #include <sstream>
 
-#include "Lexer.h"
-#include "Parser.h"
-#include "Compiler.h"
-#include "VM.h"
-#include "ASTPrinter.h"
-#include "Disassembler.h"
+#include "lexer/Lexer.h"
+#include "parser/Parser.h"
+#include "compiler/Compiler.h"
+#include "vm/VM.h"
+#include "tools/ASTPrinter.h"
+#include "tools/Disassembler.h"
 
 using namespace std;
 

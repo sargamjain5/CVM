@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "AST.h"
+#include "../parser/AST.h"
 #include "Bytecode.h"
 
 class Compiler {

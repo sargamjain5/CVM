@@ -4,7 +4,7 @@
 #include <memory>
 #include <stdexcept>
 
-#include "Token.h"
+#include "../lexer/Token.h"
 #include "AST.h"
 
 class Parser {

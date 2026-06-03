@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "AST.h"
+#include "../parser/AST.h"
 
 class ASTPrinter {
 

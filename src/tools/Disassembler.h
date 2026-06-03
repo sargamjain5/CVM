@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Bytecode.h"
+#include "../compiler/Bytecode.h"
 
 class Disassembler {
 
