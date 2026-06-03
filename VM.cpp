@@ -6,7 +6,9 @@
 int VM::execute(
     const std::vector<Instruction>& bytecode)
 {
-    stack.clear();
+    if(bytecode.empty()) {
+        return 0;
+    }
 
     size_t ip = 0;
 
@@ -17,14 +19,22 @@ int VM::execute(
 
         switch(inst.op) {
 
-            case OpCode::PUSH:
+            case OpCode::PUSH: {
 
                 stack.push_back(
                     inst.operand
                 );
+
                 break;
+            }
 
             case OpCode::STORE: {
+
+                if(stack.empty()) {
+                    throw std::runtime_error(
+                        "STORE on empty stack"
+                    );
+                }
 
                 int value =
                     stack.back();
@@ -38,6 +48,15 @@ int VM::execute(
             }
 
             case OpCode::LOAD: {
+
+                if(variables.find(inst.name)
+                   == variables.end())
+                {
+                    throw std::runtime_error(
+                        "Undefined variable: "
+                        + inst.name
+                    );
+                }
 
                 stack.push_back(
                     variables[inst.name]
@@ -54,7 +73,7 @@ int VM::execute(
                 int a = stack.back();
                 stack.pop_back();
 
-                stack.push_back(a+b);
+                stack.push_back(a + b);
 
                 break;
             }
@@ -67,7 +86,7 @@ int VM::execute(
                 int a = stack.back();
                 stack.pop_back();
 
-                stack.push_back(a-b);
+                stack.push_back(a - b);
 
                 break;
             }
@@ -80,7 +99,7 @@ int VM::execute(
                 int a = stack.back();
                 stack.pop_back();
 
-                stack.push_back(a*b);
+                stack.push_back(a * b);
 
                 break;
             }
@@ -90,10 +109,16 @@ int VM::execute(
                 int b = stack.back();
                 stack.pop_back();
 
+                if(b == 0) {
+                    throw std::runtime_error(
+                        "Division by zero"
+                    );
+                }
+
                 int a = stack.back();
                 stack.pop_back();
 
-                stack.push_back(a/b);
+                stack.push_back(a / b);
 
                 break;
             }
@@ -179,10 +204,17 @@ int VM::execute(
             case OpCode::JMP: {
 
                 ip = inst.operand;
+
                 continue;
             }
 
             case OpCode::JMP_IF_FALSE: {
+
+                if(stack.empty()) {
+                    throw std::runtime_error(
+                        "JMP_IF_FALSE on empty stack"
+                    );
+                }
 
                 int condition =
                     stack.back();
@@ -192,6 +224,7 @@ int VM::execute(
                 if(!condition) {
 
                     ip = inst.operand;
+
                     continue;
                 }
 
@@ -199,6 +232,12 @@ int VM::execute(
             }
 
             case OpCode::PRINT: {
+
+                if(stack.empty()) {
+                    throw std::runtime_error(
+                        "PRINT on empty stack"
+                    );
+                }
 
                 std::cout
                     << stack.back()

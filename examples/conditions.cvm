@@ -1,0 +1,22 @@
+print(10 > 5);
+
+print(5 > 10);
+
+print(10 >= 10);
+
+print(10 <= 5);
+
+print(10 == 10);
+
+print(10 != 5);
+
+if(10 > 5){
+    print(100);
+}
+
+if(10 == 5){
+    print(999);
+}
+else{
+    print(111);
+}

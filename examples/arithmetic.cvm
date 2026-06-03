@@ -1,0 +1,14 @@
+print(10 + 20);
+
+print(50 - 15);
+
+print(6 * 7);
+
+print(100 / 5);
+
+x = 10;
+y = 20;
+
+print(x + y);
+print(y - x);
+print(x * y);
