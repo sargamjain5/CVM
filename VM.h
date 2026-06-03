@@ -2,18 +2,23 @@
 
 #include <vector>
 #include <unordered_map>
-#include <string>
 
 #include "Bytecode.h"
 
 class VM {
+
 private:
 
     std::vector<int> stack;
 
-    std::unordered_map<std::string, int> variables;
+    std::unordered_map<
+        std::string,
+        int
+    > variables;
 
 public:
 
-    int execute(const std::vector<Instruction>& bytecode);
+    int execute(
+        const std::vector<Instruction>& bytecode
+    );
 };

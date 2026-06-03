@@ -12,20 +12,20 @@ std::vector<Token> Lexer::tokenize() {
 
         char current = source[pos];
 
-        // Skip spaces
+        // Skip whitespace
         if(std::isspace(current)) {
             pos++;
             continue;
         }
 
-        // Identifiers (x, y, total, count1)
+        // Identifiers / Keywords
         if(std::isalpha(current)) {
 
             std::string identifier;
 
             while(pos < source.size() &&
-                std::isalnum(source[pos])) {
-
+                  std::isalnum(source[pos]))
+            {
                 identifier += source[pos];
                 pos++;
             }
@@ -34,6 +34,18 @@ std::vector<Token> Lexer::tokenize() {
 
                 tokens.push_back(
                     Token(TokenType::PRINT)
+                );
+            }
+            else if(identifier == "if") {
+
+                tokens.push_back(
+                    Token(TokenType::IF)
+                );
+            }
+            else if(identifier == "while") {
+
+                tokens.push_back(
+                    Token(TokenType::WHILE)
                 );
             }
             else {
@@ -55,8 +67,8 @@ std::vector<Token> Lexer::tokenize() {
             std::string number;
 
             while(pos < source.size() &&
-                  std::isdigit(source[pos])) {
-
+                  std::isdigit(source[pos]))
+            {
                 number += source[pos];
                 pos++;
             }
@@ -68,6 +80,19 @@ std::vector<Token> Lexer::tokenize() {
                 )
             );
 
+            continue;
+        }
+
+        // ==
+        if(current == '=' &&
+           pos + 1 < source.size() &&
+           source[pos + 1] == '=')
+        {
+            tokens.push_back(
+                Token(TokenType::EQUAL_EQUAL)
+            );
+
+            pos += 2;
             continue;
         }
 
@@ -109,6 +134,18 @@ std::vector<Token> Lexer::tokenize() {
                 );
                 break;
 
+            case '{':
+                tokens.push_back(
+                    Token(TokenType::LBRACE)
+                );
+                break;
+
+            case '}':
+                tokens.push_back(
+                    Token(TokenType::RBRACE)
+                );
+                break;
+
             case '=':
                 tokens.push_back(
                     Token(TokenType::ASSIGN)
@@ -118,6 +155,18 @@ std::vector<Token> Lexer::tokenize() {
             case ';':
                 tokens.push_back(
                     Token(TokenType::SEMICOLON)
+                );
+                break;
+
+            case '>':
+                tokens.push_back(
+                    Token(TokenType::GREATER)
+                );
+                break;
+
+            case '<':
+                tokens.push_back(
+                    Token(TokenType::LESS)
                 );
                 break;
 

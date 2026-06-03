@@ -14,6 +14,13 @@ enum class OpCode {
     MUL,
     DIV,
 
+    GT,
+    LT,
+    EQ,
+
+    JMP,
+    JMP_IF_FALSE,
+
     PRINT
 };
 
@@ -24,7 +31,7 @@ struct Instruction {
     int operand;
     std::string name;
 
-    Instruction(OpCode opcode, int value)
+    Instruction(OpCode opcode, int value = 0)
         : op(opcode),
           operand(value),
           name("") {}
@@ -36,9 +43,4 @@ struct Instruction {
         : op(opcode),
           operand(0),
           name(variableName) {}
-
-    Instruction(OpCode opcode)
-        : op(opcode),
-          operand(0),
-          name("") {}
 };

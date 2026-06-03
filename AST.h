@@ -67,6 +67,30 @@ public:
         : expr(std::move(e)) {}
 };
 
+class IfNode : public ASTNode {
+public:
+
+    std::unique_ptr<ASTNode> condition;
+
+    std::vector<std::unique_ptr<ASTNode>> body;
+
+    IfNode(
+        std::unique_ptr<ASTNode> cond
+    )
+        : condition(std::move(cond)) {}
+};
+class WhileNode : public ASTNode {
+public:
+
+    std::unique_ptr<ASTNode> condition;
+
+    std::vector<std::unique_ptr<ASTNode>> body;
+
+    WhileNode(
+        std::unique_ptr<ASTNode> cond
+    )
+        : condition(std::move(cond)) {}
+};
 class ProgramNode : public ASTNode {
 public:
     std::vector<std::unique_ptr<ASTNode>> statements;

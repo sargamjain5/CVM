@@ -8,8 +8,14 @@ enum class TokenType {
 
     IDENTIFIER,
     PRINT,
+    IF,
+    WHILE,
 
     ASSIGN,
+    EQUAL_EQUAL,
+
+    GREATER,
+    LESS,
 
     PLUS,
     MINUS,
@@ -18,6 +24,9 @@ enum class TokenType {
 
     LPAREN,
     RPAREN,
+
+    LBRACE,
+    RBRACE,
 
     SEMICOLON,
 

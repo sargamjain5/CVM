@@ -21,6 +21,10 @@ private:
 
     std::unique_ptr<ASTNode> statement();
 
+    std::unique_ptr<ASTNode> ifStatement();
+    std::unique_ptr<ASTNode> whileStatement();
+
+    std::unique_ptr<ASTNode> comparison();
     std::unique_ptr<ASTNode> expression();
     std::unique_ptr<ASTNode> term();
     std::unique_ptr<ASTNode> factor();

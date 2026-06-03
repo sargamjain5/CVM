@@ -9,11 +9,13 @@ using namespace std;
 
 int main() {
 
+
     string code =
-        "x=10;"
-        "y=20;"
-        "print(x+y);"
-        "print(x*y);";
+        "x=0;"
+        "while(x<5){"
+        "print(x);"
+        "x=x+1;"
+        "}";
 
     try {
 
@@ -31,11 +33,7 @@ int main() {
 
         VM vm;
 
-        int result = vm.execute(bytecode);
-
-        cout << "Result = "
-             << result
-             << endl;
+        vm.execute(bytecode);
     }
     catch(const exception& e) {
 

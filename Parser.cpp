@@ -30,11 +30,12 @@ std::unique_ptr<ASTNode> Parser::parse() {
             statement()
         );
 
-        // Semicolon is optional for last statement
         if(peek().type == TokenType::SEMICOLON) {
             advance();
         }
-        else if(peek().type != TokenType::END) {
+        else if(peek().type != TokenType::END &&
+                peek().type != TokenType::RBRACE)
+        {
             throw std::runtime_error(
                 "Expected ';'"
             );
@@ -44,15 +45,92 @@ std::unique_ptr<ASTNode> Parser::parse() {
     return program;
 }
 
+std::unique_ptr<ASTNode> Parser::ifStatement() {
+
+    advance(); // consume IF
+
+    expect(TokenType::LPAREN);
+
+    auto condition = comparison();
+
+    expect(TokenType::RPAREN);
+
+    expect(TokenType::LBRACE);
+
+    auto ifNode =
+        std::make_unique<IfNode>(
+            std::move(condition)
+        );
+
+    while(peek().type != TokenType::RBRACE) {
+
+        ifNode->body.push_back(
+            statement()
+        );
+
+        if(peek().type == TokenType::SEMICOLON) {
+            advance();
+        }
+    }
+
+    expect(TokenType::RBRACE);
+
+    return ifNode;
+}
+
+std::unique_ptr<ASTNode> Parser::whileStatement() {
+
+    advance(); // consume WHILE
+
+    expect(TokenType::LPAREN);
+
+    auto condition = comparison();
+
+    expect(TokenType::RPAREN);
+
+    expect(TokenType::LBRACE);
+
+    auto whileNode =
+        std::make_unique<WhileNode>(
+            std::move(condition)
+        );
+
+    while(peek().type != TokenType::RBRACE) {
+
+        whileNode->body.push_back(
+            statement()
+        );
+
+        if(peek().type == TokenType::SEMICOLON) {
+            advance();
+        }
+    }
+
+    expect(TokenType::RBRACE);
+
+    return whileNode;
+}
+
 std::unique_ptr<ASTNode> Parser::statement() {
 
+    // while(...)
+    if(peek().type == TokenType::WHILE) {
+        return whileStatement();
+    }
+
+    // if(...)
+    if(peek().type == TokenType::IF) {
+        return ifStatement();
+    }
+
+    // print(...)
     if(peek().type == TokenType::PRINT) {
 
         advance();
 
         expect(TokenType::LPAREN);
 
-        auto expr = expression();
+        auto expr = comparison();
 
         expect(TokenType::RPAREN);
 
@@ -61,15 +139,16 @@ std::unique_ptr<ASTNode> Parser::statement() {
         );
     }
 
+    // x = ...
     if(peek().type == TokenType::IDENTIFIER &&
        current + 1 < tokens.size() &&
        tokens[current + 1].type == TokenType::ASSIGN)
     {
         std::string name = advance().value;
 
-        advance();
+        advance(); // consume '='
 
-        auto value = expression();
+        auto value = comparison();
 
         return std::make_unique<AssignmentNode>(
             name,
@@ -77,7 +156,38 @@ std::unique_ptr<ASTNode> Parser::statement() {
         );
     }
 
-    return expression();
+    return comparison();
+}
+
+std::unique_ptr<ASTNode> Parser::comparison() {
+
+    auto left = expression();
+
+    while(peek().type == TokenType::GREATER ||
+          peek().type == TokenType::LESS ||
+          peek().type == TokenType::EQUAL_EQUAL)
+    {
+        Token op = advance();
+
+        auto right = expression();
+
+        char operation;
+
+        if(op.type == TokenType::GREATER)
+            operation = '>';
+        else if(op.type == TokenType::LESS)
+            operation = '<';
+        else
+            operation = '=';
+
+        left = std::make_unique<BinaryOpNode>(
+            operation,
+            std::move(left),
+            std::move(right)
+        );
+    }
+
+    return left;
 }
 
 std::unique_ptr<ASTNode> Parser::expression() {
@@ -142,7 +252,7 @@ std::unique_ptr<ASTNode> Parser::factor() {
 
     if(token.type == TokenType::LPAREN) {
 
-        auto expr = expression();
+        auto expr = comparison();
 
         expect(TokenType::RPAREN);
 
